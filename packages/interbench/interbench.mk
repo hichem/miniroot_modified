@@ -1,7 +1,7 @@
 # if RT_EXTENSION_SRC is a version number
 ifeq ($(strip $(shell $(TOOLS_DIR)/is_src.sh '$(INTERBENCH_SRC)')),false)
 override INTERBENCH_SRC_SRC := $(INTERBENCH_DIR)/interbench-$(strip $(INTERBENCH_SRC)).tar.bz2
-INTERBENCH_URL = http://matt.ucc.asn.au/dropbear/releases/$(notdir $(INTERBENCH_SRC))
+INTERBENCH_URL = http://www.kernel.org/pub/linux/kernel/people/ck/apps/interbench/$(notdir $(INTERBENCH_SRC))
 endif
 
 INTERBENCH_SRC_DIR = $(shell $(TOOLS_DIR)/get_src_dir.sh '$(INTERBENCH_DIR)' '$(INTERBENCH_SRC)')

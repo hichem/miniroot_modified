@@ -282,8 +282,8 @@ SED_SCRIPT := $(SED_SCRIPT)s,CT_INSTALL_DIR_RO=.*,\# CT_INSTALL_DIR_RO,;
 
 
 ifeq ($(strip $(shell $(TOOLS_DIR)/is_src.sh '$(CROSSTOOL_SRC)')),false)
-override LINUX_SRC := $(CROSSTOOL_DIR)/crosstool-ng-$(strip $(CROSSTOOL_SRC)).tar.bz2
-CROSSTOOL_URL = http://www.kernel.org/pub/linux/kernel/v2.6/$(notdir $(CROSSTOOL_SRC))
+override CROSSTOOL_SRC := $(CROSSTOOL_DIR)/crosstool-ng-$(strip $(CROSSTOOL_SRC)).tar.bz2
+CROSSTOOL_URL = http://ymorin.is-a-geek.org/download/crosstool-ng/$(notdir $(CROSSTOOL_SRC))
 endif
 
 CROSSTOOL_SRC_DIR = $(shell $(TOOLS_DIR)/get_src_dir.sh '$(TOOLCHAIN_DIR)' '$(CROSSTOOL_SRC)')
