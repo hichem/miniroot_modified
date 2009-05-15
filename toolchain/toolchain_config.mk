@@ -37,7 +37,7 @@ THREADING_LIB = nptl
 
 # Tools
 LIBELF = yes
-SSTRIP = yes
+OPT_SSTRIP = yes
 
 # Debugging Tools
 GDB = yes
