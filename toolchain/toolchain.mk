@@ -2,7 +2,7 @@ include $(TOOLCHAIN_DIR)/toolchain_config.mk
 
 UARCH := $(shell $(TOOLCHAIN_DIR)/utils.sh 'upper' '$(TARGET_ARCH)')
 UVARIANT := $(shell $(TOOLCHAIN_DIR)/utils.sh 'upper' '$(TARGET_VARIANT)')
-GCC_VERSION_CHECK := $(shell $(TOOLCHAIN_DIR)/utils.sh 'check_gcc' '4.3')
+GCC_VERSION_CHECK := $(shell $(TOOLCHAIN_DIR)/utils.sh 'check_gcc' '$(GCC_VERSION)')
 
 ## Target options
 
