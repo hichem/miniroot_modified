@@ -27,6 +27,7 @@ SET_CXXFLAGS = $(if $(TARGET_CXXFLAGS), CXXFLAGS='$(TARGET_CXXFLAGS)')
 SET_LDFLAGS = $(if $(TARGET_LDFLAGS), LDFLAGS='$(TARGET_LDFLAGS)')
 TARGET_STATIC = $(findstring -static, $(TARGET_LDFLAGS))
 TARGET_LIB_DIRS += $(if $(TOOLCHAIN_PATH), $(strip $(TOOLCHAIN_PATH))/lib)
+TARGET_LIB_DIRS += $(if $(TOOLCHAIN_PATH), $(strip $(TOOLCHAIN_PATH))/$(notdir $(TOOLCHAIN_PATH))/lib)
 CONFIGURE_HOST = $(if $(TOOLCHAIN_PREFIX), --host=$(strip $(TOOLCHAIN_PREFIX:-=)))
 TOOLCHAIN_PATH_PREFIX = $(if $(TOOLCHAIN_PATH), $(strip $(TOOLCHAIN_PATH))/bin/$(TOOLCHAIN_PREFIX))
 TARGET_STRIP = $(TOOLCHAIN_PATH_PREFIX)strip -s
@@ -37,6 +38,19 @@ BUILD_DIR ?= build
 # Build tools
 TOOLS_DIR = tools
 include $(TOOLS_DIR)/tools.mk
+
+# Build toolchain
+TOOLCHAIN_DIR = toolchain
+include $(TOOLCHAIN_DIR)/toolchain.mk
+
+# RTAI
+RTAI_DIR = rtai
+
+# Xenomai
+XENOMAI_DIR = xenomai
+
+# Preempt-RT
+PREEMPT_RT_DIR = preempt_rt
 
 # Linux
 LINUX_DIR = linux
