@@ -23,7 +23,7 @@ XENOMAI_KERNEL_PATCH = $(abspath $(XENOMAI_SRC_DIR))/scripts/prepare-kernel.sh -
 							--adeos=$(XENOMAI_SRC_DIR)/$(RT_LINUX_PATCH) \
 							--linux=$(LINUX_SRC_DIR)
 XENOMAI_CONFIGURE = $(SET_PATH) $(abspath $(XENOMAI_SRC_DIR))/configure CC=$(TOOLCHAIN_PREFIX)gcc CXX=$(TOOLCHAIN_PREFIX)g++ \
-								AR=$(TOOLCHAIN_PREFIX)ar LD=$(TOOLCHAIN_PREFIX)ld --host=arm-unknown-linux-gnu --enable-arm-mach=generic
+								AR=$(TOOLCHAIN_PREFIX)ar LD=$(TOOLCHAIN_PREFIX)ld $(RT_ARCH_CONFIG)
 
 TARGET_LIB_DIRS += $(abspath $(ROOT_BUILD_DIR))/usr/xenomai/lib
 
