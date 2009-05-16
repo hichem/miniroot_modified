@@ -7,10 +7,10 @@ elif [ $1 = 'check_gcc' ]
 then
 	n1=`echo $2 | cut -d. -f1`
 	n2=`echo $2 | cut -d. -f2`
-	if [ $n1 > 4 ]
+	if [ $n1 -gt 4 ]
 	then
 		echo "ok"
-	elif [ $n1 = 4 -a $n2 >= 3 ]
+	elif [ $n1 -eq 4 -a $n2 -gt 3 ]
 	then
 		echo "ok"
 	fi

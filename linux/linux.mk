@@ -26,9 +26,11 @@ LINUX_INITRAMFS = $(shell grep '^CONFIG_INITRAMFS_SOURCE=' $(LINUX_BUILD_CONFIG)
 LINUX_GET_INITRAMFS = sed -n 's,^CONFIG_INITRAMFS_SOURCE="*\(.*\)"*,\1,p' $(LINUX_BUILD_CONFIG)
 LINUX_SET_INITRAMFS = sed -i 's,^\(CONFIG_INITRAMFS_SOURCE=\).*,\1"$(abspath $(ROOT_CPIO))",' $(LINUX_BUILD_CONFIG)
 
+
 .PHONY: linux linux_clean linux_init linux_init2 linux_init_src \
 	linux_build_root linux_initramfs linux_no_initramfs \
-	linux_modules linux_modules_install
+	linux_modules linux_modules_install rtai_linux_src_config \
+	rtai_linux_kernel_prepare linux_mrproper
 clean: linux_clean
 
 linux: linux_all
@@ -42,6 +44,7 @@ linux_init_src:
 	@ $(TOOLS_DIR)/init_src.sh '$(LINUX_DIR)' '$(LINUX_SRC)' '$(LINUX_URL)' '$(LINUX_PATCH_DIR)'
 
 $(LINUX_BUILD_CONFIG):
+	@ echo '=== Configuring the Linux kernel ==='
 	mkdir -p $(LINUX_BUILD_DIR)
 	@ echo 'copy config to $(LINUX_BUILD_CONFIG)'
 	@ if [ -f '$(strip $(LINUX_CONFIG))' ] ; then \
@@ -50,14 +53,19 @@ $(LINUX_BUILD_CONFIG):
 		cp $(LINUX_SRC_DIR)/arch/$(TARGET_ARCH)/configs/$(LINUX_CONFIG) $(LINUX_BUILD_CONFIG) ; \
 	fi
 	$(LINUX_MAKE_OLDCONFIG)
+	sed -i 's,^CONFIG_NR_CPUS.*,CONFIG_NR_CPUS=2,' $(LINUX_BUILD_CONFIG)
 
-linux_build_root: $(if $(LINUX_MODULES), linux_modules_install)
+linux_build_root: $(if $(LINUX_MODULES), linux_modules_install) realtime_install
 	$(if $(LINUX_INITRAMFS), \
 		$(MAKE) linux_initramfs, \
 		$(MAKE) linux_no_initramfs \
 	)
 
-linux_initramfs: image linux_init2
+linux_mrproper:
+	cd $(LINUX_SRC_DIR) && \
+	$(MAKE) mrproper
+
+linux_initramfs: image linux_init2 linux_mrproper
 	@ if [ "`$(LINUX_GET_INITRAMFS)`" != '$(abspath $(ROOT_CPIO))' ] ; then \
 		echo 'set CONFIG_INITRAMFS_SOURCE=$(ROOT_CPIO)' ; \
 		$(LINUX_SET_INITRAMFS) && \
@@ -72,7 +80,7 @@ linux_no_initramfs:
 	fi
 
 # wildcard rule
-linux_%: linux_init linux_init_src $(LINUX_BUILD_CONFIG)
+linux_%: linux_init linux_init_src realtime_patch  $(LINUX_BUILD_CONFIG)
 	$(if $(or \
 			$(filter all, $*), \
 			$(filter vmlinux, $*), \
@@ -86,11 +94,15 @@ linux_%: linux_init linux_init_src $(LINUX_BUILD_CONFIG)
 	$(LINUX_MAKE) $*
 
 linux_modules: linux_init_src $(LINUX_BUILD_CONFIG)
+	@ echo '=== Building Linux modules ==='
 	$(LINUX_MAKE) modules
 
 linux_modules_install: linux_modules
+	@ echo '=== Installing Linux modules ==='
 	$(LINUX_MAKE) INSTALL_MOD_PATH=$(abspath $(ROOT_BUILD_DIR)) modules_install
 	find $(ROOT_BUILD_LIB_DIR)/modules -name "*.ko" | xargs -r $(TARGET_STRIP)
 
 linux_clean:
 	- $(LINUX_MAKE) clean
+	- rm -rf $(LINUX_SRC_DIR)
+	- rm -rf $(LINUX_BUILD_DIR) 

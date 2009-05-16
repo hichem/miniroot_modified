@@ -43,14 +43,9 @@ include $(TOOLS_DIR)/tools.mk
 TOOLCHAIN_DIR = toolchain
 include $(TOOLCHAIN_DIR)/toolchain.mk
 
-# RTAI
-RTAI_DIR = rtai
-
-# Xenomai
-XENOMAI_DIR = xenomai
-
-# Preempt-RT
-PREEMPT_RT_DIR = preempt_rt
+# Realtime Linux
+REALTIME_DIR = realtime
+include $(REALTIME_DIR)/realtime.mk
 
 # Linux
 LINUX_DIR = linux
