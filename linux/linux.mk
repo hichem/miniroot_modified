@@ -42,6 +42,7 @@ linux_init2:
 
 linux_init_src:
 	@ $(TOOLS_DIR)/init_src.sh '$(LINUX_DIR)' '$(LINUX_SRC)' '$(LINUX_URL)' '$(LINUX_PATCH_DIR)'
+	@ $(MAKE) realtime_patch
 
 $(LINUX_BUILD_CONFIG):
 	@ echo '=== Configuring the Linux kernel ==='
@@ -80,7 +81,7 @@ linux_no_initramfs:
 	fi
 
 # wildcard rule
-linux_%: linux_init linux_init_src realtime_patch  $(LINUX_BUILD_CONFIG)
+linux_%: linux_init linux_init_src  $(LINUX_BUILD_CONFIG)
 	$(if $(or \
 			$(filter all, $*), \
 			$(filter vmlinux, $*), \
